@@ -17,15 +17,47 @@ function validateEmail(email) {
     return re.test(String(email).toLowerCase());
 }
 
+function validatePassword(password){
+    let mustInclude = '!@#$%^&*';
+    const x = mustInclude.split('')
+    if(password.length < 8){
+        console.log('smaller than 8')
+        return false
+    }
+    let z = 0
+    x.forEach(a=>{
+        if(password.includes(a)){
+            z = 1
+        }
+    })
+    if(z === 1){
+        return true
+    }
+}
+
 const validateData = (arrayOfData)=>{
+    let password = '';
     arrayOfData.forEach(a=>{
-        if(a.value ===''){
-            return fail(a, 'empty field')
+        if(a.value.trim() ===''){
+            return fail(a, `Requires ${a.id}`)
         }else if(a.id == 'email'){
             if(!validateEmail(a.value)){
                 return fail(a, 'Not a valid email')
             }else{
                 return win(a)
+            }
+        }else if(a.id == 'password'){
+            if(!validatePassword(a.value)){
+                return fail(a, 'Password fail')
+            }else{
+                password = a.value
+                return win(a)
+            }
+        }else if(a.id == 'confirm'){
+            if(a.value === password){
+                return win(a)
+            }else{
+                return fail(a, 'Passwords do not match')
             }
         }else{
             return win(a)
