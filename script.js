@@ -14,60 +14,57 @@ const win = (target)=>{
 
 function validateEmail(email) {
     var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-    return re.test(String(email).toLowerCase());
+    if(!re.test(String(email.value).toLowerCase())){
+        return fail(email, 'Not a valid email')
+    }else{
+        return win(email)
+    }
 }
 
 function validatePassword(password){
     let mustInclude = '!@#$%^&*';
     const x = mustInclude.split('')
-    if(password.length < 8){
-        console.log('smaller than 8')
-        return false
+    if(password.value.length < 8){
+        return fail(password, 'Must be at least 8 characters')
     }
     let z = 0
     x.forEach(a=>{
-        if(password.includes(a)){
+        if(password.value.includes(a)){
             z = 1
         }
     })
     if(z === 1){
-        return true
+        return win(password)
+    }else{
+        return fail(password, 'Must use at least one symbol')
     }
 }
 
-const validateData = (arrayOfData)=>{
-    let password = '';
+const validateLength = (arrayOfData)=>{
     arrayOfData.forEach(a=>{
-        if(a.value.trim() ===''){
+        if(a.value.trim()===''){
+            console.log(a.value)
             return fail(a, `Requires ${a.id}`)
-        }else if(a.id == 'email'){
-            if(!validateEmail(a.value)){
-                return fail(a, 'Not a valid email')
-            }else{
-                return win(a)
-            }
-        }else if(a.id == 'password'){
-            if(!validatePassword(a.value)){
-                return fail(a, 'Password fail')
-            }else{
-                password = a.value
-                return win(a)
-            }
-        }else if(a.id == 'confirm'){
-            if(a.value === password){
-                return win(a)
-            }else{
-                return fail(a, 'Passwords do not match')
-            }
+        }else if(a.value.trim().length <3){
+            return fail(a, 'Must be at least 3 characters')
         }else{
-            return win(a)
+            win(a)
         }
-        
     })
+}
+
+const passwordMatch = (input1, input2)=>{
+    if(input1.value === input2.value){
+        return win(input2)
+    }else{
+        return fail(input2, 'Passwords do not match')
+    }
 }
 
 document.querySelector('.form').addEventListener('submit',(e)=>{
     e.preventDefault()
-    
-    validateData([username, email, password, confirm])
+    validateLength([username, email, password, confirm])
+    validateEmail(email)
+    validatePassword(password)
+    passwordMatch(password, confirm)
 })
