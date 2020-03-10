@@ -17,21 +17,25 @@ function validateEmail(email) {
     return re.test(String(email).toLowerCase());
 }
 
+const validateData = (arrayOfData)=>{
+    arrayOfData.forEach(a=>{
+        if(a.value ===''){
+            return fail(a, 'empty field')
+        }else if(a.id == 'email'){
+            if(!validateEmail(a.value)){
+                return fail(a, 'Not a valid email')
+            }else{
+                return win(a)
+            }
+        }else{
+            return win(a)
+        }
+        
+    })
+}
+
 document.querySelector('.form').addEventListener('submit',(e)=>{
     e.preventDefault()
     
-    if(username.value===''){
-        fail(username, 'field is empty')
-    }else{
-        win(username)
-    }
-
-    if(email.value===''){
-        fail(email, 'field is empty')
-    }else if(!validateEmail(email)){
-        fail(email, 'email not valid')
-    }else{
-        win(email)
-    }
-
+    validateData([username, email, password, confirm])
 })
